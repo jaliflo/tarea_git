@@ -25,3 +25,6 @@ git push --set-upstream origin Lima_Invertir
 
 git branch Lima_Fusion
 git checkout
+git merge Lima_Multiplicar
+git merge --continue
+git push --set-upstream origin Lima_Fusion
