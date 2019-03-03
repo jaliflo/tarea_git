@@ -141,6 +141,26 @@ public class Matriz {
             }
         }
     }
+    
+    public static Matriz multiplicarDosMatrices(Matriz a, Matriz b) throws DimensionesIncompatibles {
+    	if(!(a.getDimension().width == b.getDimension().height)) throw new DimensionesIncompatibles("Las columnas de A deben coincidir con las filas de B");
+    	int filasA = a.getDimension().height;
+    	int columnasA = b.getDimension().width;
+    	Matriz matrizResultante = new Matriz(filasA, columnasA, false);
+    	for(int i = 0; i < filasA; i++) {
+    		for(int j = 0; j < columnasA; j++) {
+    			int elemento = 0;
+    			int filaDeB = 0;
+    			for(int k = 0; k < columnasA; k++) {
+    				elemento = elemento+(a.datos[k][i]*b.datos[filaDeB][j]);
+    				filaDeB++;
+    			}
+    			matrizResultante.datos[i][j] = elemento;
+    		}
+    	}
+    	
+    	return matrizResultante;
+    }
 
     @Override
     public String toString(){
