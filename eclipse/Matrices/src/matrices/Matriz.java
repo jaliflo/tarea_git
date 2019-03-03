@@ -47,6 +47,100 @@ public class Matriz {
         } 
         return matrizResultante; 
     } 
+    
+    public static Matriz invertirMatriz(Matriz a) throws DimensionesIncompatibles{
+    	if(! (a.getDimension().height == a.getDimension().width)) throw new DimensionesIncompatibles("La suma de matrices requiere matrices de las mismas dimensiones");
+        int dimension = a.getDimension().height;
+        Matriz x = new Matriz(dimension, dimension, false);
+        Matriz b = new Matriz(dimension, dimension, false);
+        int indices[] = new int[dimension];
+        for (int i=0; i<dimension; ++i) 
+            b.datos[i][i] = 1;
+ 
+ // Transform the matrix into an upper triangle
+        gaus(a, indices);
+ 
+ // Update the matrix b[i][j] with the ratios stored
+        for (int i=0; i<dimension-1; ++i)
+            for (int j=i+1; j<dimension; ++j)
+                for (int k=0; k<dimension; ++k)
+                    b.datos[indices[j]][k]
+                    	    -= a.datos[indices[j]][i]*b.datos[indices[i]][k];
+ 
+ // Perform backward substitutions
+        for (int i=0; i<dimension; ++i) 
+        {
+            x.datos[dimension-1][i] = b.datos[indices[dimension-1]][i]/a.datos[indices[dimension-1]][dimension-1];
+            for (int j=dimension-2; j>=0; --j) 
+            {
+                x.datos[j][i] = b.datos[indices[j]][i];
+                for (int k=j+1; k<dimension; ++k) 
+                {
+                    x.datos[j][i] -= a.datos[indices[j]][k]*x.datos[k][i];
+                }
+                x.datos[j][i] /= a.datos[indices[j]][j];
+            }
+        }
+        return x;
+    }
+ 
+// Method to carry out the partial-pivoting Gaussian
+// elimination.  Here index[] stores pivoting order.
+ 
+    public static void gaus(Matriz a, int indices[]) 
+    {
+        int n = indices.length;
+        double c[] = new double[n];
+ 
+ // Initialize the index
+        for (int i=0; i<n; ++i) 
+            indices[i] = i;
+ 
+ // Find the rescaling factors, one from each row
+        for (int i=0; i<n; ++i) 
+        {
+            double c1 = 0;
+            for (int j=0; j<n; ++j) 
+            {
+                double c0 = Math.abs(a.datos[i][j]);
+                if (c0 > c1) c1 = c0;
+            }
+            c[i] = c1;
+        }
+ 
+ // Search the pivoting element from each column
+        int k = 0;
+        for (int j=0; j<n-1; ++j) 
+        {
+            double pi1 = 0;
+            for (int i=j; i<n; ++i) 
+            {
+                double pi0 = Math.abs(a.datos[indices[i]][j]);
+                pi0 /= c[indices[i]];
+                if (pi0 > pi1) 
+                {
+                    pi1 = pi0;
+                    k = i;
+                }
+            }
+ 
+   // Interchange rows according to the pivoting order
+            int itmp = indices[j];
+            indices[j] = indices[k];
+            indices[k] = itmp;
+            for (int i=j+1; i<n; ++i) 	
+            {
+                int pj = a.datos[indices[i]][j]/a.datos[indices[j]][j];
+ 
+ // Record pivoting ratios below the diagonal
+                a.datos[indices[i]][j] = pj;
+ 
+ // Modify other elements accordingly
+                for (int l=j+1; l<n; ++l)
+                    a.datos[indices[i]][l] -= pj*a.datos[indices[j]][l];
+            }
+        }
+    }
 
     @Override
     public String toString(){
