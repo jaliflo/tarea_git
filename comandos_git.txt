@@ -1,1 +1,18 @@
 git clone https://github.com/galvezuma/ISIA_task.git tarea_git
+git status
+git add eclipse
+git commit
+
+git remote remove origin
+git remote add origin https://github.com/jaliflo/tarea_git.git
+git push -u origin master
+
+git branch Lima_Multiplicar
+git checkout Lima_Multiplicar
+
+git add eclipse
+git commit
+git push --set-upstream origin Lima_Multiplicar
+
+git branch Lima_Invertir
+git checkout Lima_Invertir
